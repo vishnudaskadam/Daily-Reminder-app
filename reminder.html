@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Daily Reminder App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    select, input[type="time"], button {
+      margin: 10px;
+      padding: 8px;
+      font-size: 16px;
+    }
+    .reminder-list {
+      margin-top: 20px;
+      width: 80%;
+      max-width: 400px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .reminder-item {
+      padding: 5px 0;
+      border-bottom: 1px solid #ddd;
+    }
+    .reminder-item:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Daily Reminder App</h1>
+
+  <!-- Dropdown for day -->
+  <select id="day">
+    <option value="">Select Day</option>
+    <option>Monday</option>
+    <option>Tuesday</option>
+    <option>Wednesday</option>
+    <option>Thursday</option>
+    <option>Friday</option>
+    <option>Saturday</option>
+    <option>Sunday</option>
+  </select>
+
+  <!-- Time picker -->
+  <input type="time" id="time">
+
+  <!-- Dropdown for activities -->
+  <select id="activity">
+    <option value="">Select Activity</option>
+    <option>Wake up</option>
+    <option>Go to gym</option>
+    <option>Breakfast</option>
+    <option>Meetings</option>
+    <option>Lunch</option>
+    <option>Quick nap</option>
+    <option>Go to library</option>
+    <option>Dinner</option>
+    <option>Go to sleep</option>
+  </select>
+
+  <button onclick="addReminder()">Add Reminder</button>
+
+  <div class="reminder-list" id="reminderList">
+    <h3>Your Reminders</h3>
+  </div>
+
+  <!-- Chime sound -->
+  <audio id="chime" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" preload="auto"></audio>
+
+  <script>
+    let reminders = [];
+
+    function addReminder() {
+      const day = document.getElementById('day').value;
+      const time = document.getElementById('time').value;
+      const activity = document.getElementById('activity').value;
+
+      if (!day || !time || !activity) {
+        alert("Please select day, time, and activity.");
+        return;
+      }
+
+      reminders.push({ day, time, activity });
+      displayReminders();
+    }
+
+    function displayReminders() {
+      const listDiv = document.getElementById('reminderList');
+      listDiv.innerHTML = '<h3>Your Reminders</h3>';
+      reminders.forEach((r, i) => {
+        const div = document.createElement('div');
+        div.className = 'reminder-item';
+        div.textContent = `${r.day} - ${r.time} - ${r.activity}`;
+        listDiv.appendChild(div);
+      });
+    }
+
+    function checkReminders() {
+      const now = new Date();
+      const currentDay = now.toLocaleString('en-US', { weekday: 'long' });
+      const currentTime = now.toTimeString().slice(0,5); 
+
+      reminders.forEach(r => {
+        if (r.day === currentDay && r.time === currentTime) {
+          document.getElementById('chime').play();
+          alert(`Reminder: ${r.activity}`);
+        }
+      });
+    }
+    setInterval(checkReminders, 1000 * 30); 
+  </script>
+
+</body>
+</html>
